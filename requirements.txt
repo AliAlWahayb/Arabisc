@@ -1,3 +1,5 @@
 tensorflow<2.11
 nltk
 numpy
+arabic-reshaper
+python-bidi
