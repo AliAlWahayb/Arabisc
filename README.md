@@ -1,3 +1,6 @@
+# need help
+I have about 700 mb of text I want to train the model on but 1 epoch takes around 8 hours on my machine If anyone wants to donate time and power contact me at Email:alialwahayb@outlook.com
+
 [![Arabisc: Context-Sensitive Neural Spelling Checker](https://img.shields.io/badge/youtube-youtu.be%2Fi06Beidzhpo-critical?style=&logo=youtube)](     https://www.youtube.com/watch?v=i06Beidzhpo)
 [![Arabisc: Context-Sensitive Neural Spelling Checker](https://img.shields.io/badge/Paper-anthology%2F2020.nlptea--1.2-lightgrey?style=&logo=read-the-docs)](https://www.aclweb.org/anthology/2020.nlptea-1.2)
 
@@ -10,11 +13,16 @@ This repository includes the dataset, code, and model of our paper *[Arabisc: Co
 
 We are providing our pre-trained model for testing directly.
 
+prepare the input by using text_preprocess.py
+```
+python text_preprocess.py <your_input_file_name.txt>
+```
+
 1. Download and unzip our spelling model at: https://arabic-spelling.s3-us-west-2.amazonaws.com/model-spell.zip
 2. In the `data` folder of the current repository, unzip: **News-Multi.ar-en.ar.more.clean.zip**
 3. Run the file **spelling-checker.py**:
 ```
-python3 spelling-checker.py
+python spelling-checker.py
 ```
 
 
