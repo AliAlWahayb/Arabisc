@@ -5,7 +5,7 @@ import sys
 
 
 source = sys.argv[1]
-output = source+".clean"
+output = 'output.txt'
 
 
 # Remove diacritics (Tashkil)
@@ -37,11 +37,12 @@ def remove_latin(text):
 
 # Remove the rest of punctuation marks
 def remove_punctuation(text):
-    arabic_punctuations =  '''`÷×؛<>_()*&^%][ـ،:"؟.,'{}~¦+|!”…“–ـ/$£•●'''
+    arabic_punctuations = '''`÷×؛<>_()*&^%][ـ،:"؟.,'{}~¦+|!”…“–ـ/$£•●'''
     english_punctuations = string.punctuation
     numbers = "1234567890١٢٣٤٥٦٧٨٩٠"
     bad_characters = "�¿áóóó□"
-    punctuations_list = arabic_punctuations + english_punctuations + numbers +  bad_characters
+    punctuations_list = arabic_punctuations + \
+        english_punctuations + numbers + bad_characters
 
     replace_slash = str.maketrans('/', ' ', '')
     text = text.translate(replace_slash)
@@ -67,12 +68,12 @@ with open(output, "w+") as clean:
         segment = remove_punctuation(segment)
         segment = remove_latin(segment)
         segment = segment.strip()
-        segment = " ".join(segment.split())                   # remove extra white-spaces
-        segment = " ".join(segment.split()[:15])              # trancate to 15 tokens
-        if segment != "" and len(segment.split())>3:          # not empty and > 3 tokens (one is <s>)
-            segment = "<s> " + segment                        # adding a start token
-            if segment[4] in arabic_characters:
-                clean.write(segment + "\n")
+        # remove extra white-spaces
+        segment = " ".join(segment.split())
+        # not empty and > 3 tokens (one is <s>)
+        if segment != "":
+            segment = segment                        # adding a start token
+            clean.write(segment + "\n")
 
 
 print("Done")

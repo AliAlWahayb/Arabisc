@@ -1,26 +1,30 @@
+# -*- coding: utf-8 -*-
+import os
+import sys
+import numpy as np
+from tensorflow.python.client import device_lib
+from tensorflow.keras.callbacks import *
+from tensorflow.keras import Input, Model
+from tensorflow.keras.losses import SparseCategoricalCrossentropy
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout, Bidirectional, concatenate
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 import tensorflow
 print(tensorflow.__version__)
 
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout, Bidirectional, concatenate
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.losses import SparseCategoricalCrossentropy
-from tensorflow.keras import Input, Model
-from tensorflow.keras.callbacks import *
-from tensorflow.python.client import device_lib
-import numpy as np
-import sys
-import os
-
 
 # Activate GPUs
-os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"]="0,1"       # Change if you have 1 GPU
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"       # Change if you have 1 GPU
 
 # Check devices visible to TensorFlow
 print(device_lib.list_local_devices())
+gpus = tensorflow.config.experimental.list_physical_devices(device_type="GPU")
+tensorflow.config.experimental.set_visible_devices(
+    devices=gpus[0], device_type="GPU")
+tensorflow.config.experimental.set_memory_growth(device=gpus[0], enable=True)
 
 
 # Pre-process data
@@ -52,13 +56,16 @@ for line in corpus:
 
 # Pad sequences
 max_sequence_len = 15
-input_sequences = np.array(pad_sequences(input_sequences, maxlen=max_sequence_len, padding='pre'))
-input_sequences_reversed = np.array(pad_sequences(input_sequences_reversed, maxlen=max_sequence_len, padding='pre'))
+input_sequences = np.array(pad_sequences(
+    input_sequences, maxlen=max_sequence_len, padding='pre'))
+input_sequences_reversed = np.array(pad_sequences(
+    input_sequences_reversed, maxlen=max_sequence_len, padding='pre'))
 
 
 # Create predictors (words before and after) and label (current word)
-predictors, label = input_sequences[:,:-1], input_sequences[:,-1]
-predictors_rev, label_rev = input_sequences_reversed[:,:-1], input_sequences_reversed[:,-1]
+predictors, label = input_sequences[:, :-1], input_sequences[:, -1]
+predictors_rev, label_rev = input_sequences_reversed[:,
+                                                     :-1], input_sequences_reversed[:, -1]
 
 # Test - label must be the same as label_rev, i.e. the current word
 print(predictors[1], label[1])
@@ -76,8 +83,9 @@ left_features = Embedding(vocab_size, 256)(left_input)
 right_features = Embedding(vocab_size, 256)(right_input)
 
 # Bidirectional LSTM
-left_features = Bidirectional(LSTM(512, return_sequences = True))(left_features)
-right_features = Bidirectional(LSTM(512, return_sequences = True))(right_features)
+left_features = Bidirectional(LSTM(512, return_sequences=True))(left_features)
+right_features = Bidirectional(
+    LSTM(512, return_sequences=True))(right_features)
 
 # LSTM
 left_features = LSTM(128)(left_features)
@@ -92,15 +100,15 @@ pred = Dense(vocab_size, activation='softmax', name="pred")(concat)
 
 # Instantiate an end-to-end model predicting the next word based on both the left and right inputs
 model = Model(
-    inputs = [left_input, right_input],
-    outputs = pred
+    inputs=[left_input, right_input],
+    outputs=pred
 )
 
 
 model.compile(
-    optimizer = Adam(),
-    loss = SparseCategoricalCrossentropy(),
-    metrics = ['accuracy']
+    optimizer=Adam(),
+    loss=SparseCategoricalCrossentropy(),
+    metrics=['accuracy']
 )
 
 print(model.summary())
@@ -109,7 +117,8 @@ print(model.summary())
 # Define callbacks
 my_callbacks = [
     EarlyStopping(monitor='val_accuracy', patience=3),
-    ModelCheckpoint(filepath='model-dual-input/model.{epoch:02d}-{accuracy:.3f}-{val_accuracy:.3f}', verbose=1)
+    ModelCheckpoint(
+        filepath='model-dual-input/model.{epoch:02d}-{accuracy:.3f}-{val_accuracy:.3f}.keras', verbose=1)
 ]
 
 
