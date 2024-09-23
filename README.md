@@ -1,4 +1,4 @@
-# need help
+# Need help
 I have about 700 mb of text I want to train the model on but 1 epoch takes around 8 hours on my machine If anyone wants to donate time and power contact me at Email:alialwahayb@outlook.com
 
 [![Arabisc: Context-Sensitive Neural Spelling Checker](https://img.shields.io/badge/youtube-youtu.be%2Fi06Beidzhpo-critical?style=&logo=youtube)](     https://www.youtube.com/watch?v=i06Beidzhpo)
