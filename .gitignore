@@ -4,3 +4,5 @@ data/News-Multi.ar-en.ar.more.clean
 /venv
 /model-dual-input
 dataset.zip
+dataset.txt
+/model-dual-input-local

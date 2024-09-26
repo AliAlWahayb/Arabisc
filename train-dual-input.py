@@ -4,10 +4,11 @@ import sys
 import numpy as np
 from tensorflow.python.client import device_lib
 from tensorflow.keras.callbacks import *
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras import Input, Model
 from tensorflow.keras.losses import SparseCategoricalCrossentropy
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout, Bidirectional, concatenate
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -120,6 +121,13 @@ my_callbacks = [
     ModelCheckpoint(
         filepath='model-dual-input/model.{epoch:02d}-{accuracy:.3f}-{val_accuracy:.3f}.keras', verbose=1)
 ]
+
+# Load the last saved model if available
+try:
+    model = load_model('model-dual-input/last_saved_model.keras')
+    print("Loaded the last saved model successfully!")
+except:
+    print("No saved model found, training from scratch.")
 
 
 # Train the model
